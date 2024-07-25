@@ -1,7 +1,7 @@
 const ethers = require("ethers")
-const userModel = require("../models/User")
+const userModel = require("../models/user.model")
 
-const auth = async (req, res) => {
+const authController = async (req, res) => {
     try {
         const { account } = req.params;
 
@@ -9,20 +9,19 @@ const auth = async (req, res) => {
         if (!signature) throw new Error("Invalid Signature");
 
         const recoveredAddress = ethers.verifyMessage("Welcome to the Vault!", signature);
-        console.log(recoveredAddress);
 
         if (account.toLowerCase() === recoveredAddress.toLowerCase()) {
-            const address = recoveredAddress.toLowerCase();
-            let user = await userModel.findOne({ userAddress: address });
-            if (!user) user = await userModel.create({ userAddress: address });
+            const userAddress = recoveredAddress.toLowerCase();
+            let user = await userModel.findOne({ userAddress });
+            if (!user) user = await userModel.create({ userAddress });
             res.status(200).json("Authentication Successful!");
         } else {
             throw new Error("Authentication Failed!")
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json(error.message);
+        res.status(500).json("Auth Failed");
     }
 }
 
-module.exports = auth;
+module.exports = authController;
