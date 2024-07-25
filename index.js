@@ -1,11 +1,20 @@
-import express from "express";
+const express = require("express")
 const app = express();
+const cors = require("cors")
 
-app.get("/", (req, res) => {
-    res.send("server is running")
-})
+const connectDB = require("./db/connectDB")
 
-const PORT = 3000;
+const { MONGODB_URI, PORT } = require("./config/server.config")
+
+const authRoutes = require("./routes/auth.routes")
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/api", authRoutes);
+
 app.listen(PORT, () => {
-    console.log(`server is running at ${PORT}`);
+    console.log(`server running : ${PORT}`);
+    connectDB(MONGODB_URI);
 });
