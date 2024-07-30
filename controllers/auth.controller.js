@@ -1,5 +1,7 @@
 const ethers = require("ethers")
 const userModel = require("../models/user.model")
+const jwt = require("jsonwebtoken")
+const { JWT_SECRET } = require("../config/server.config")
 
 const authController = async (req, res) => {
     try {
@@ -14,9 +16,9 @@ const authController = async (req, res) => {
             const userAddress = recoveredAddress.toLowerCase();
             let user = await userModel.findOne({ userAddress });
             if (!user) user = await userModel.create({ userAddress });
-            res.status(200).json("Authentication Successful!");
-        } else {
-            throw new Error("Authentication Failed!")
+            const token = jwt.sign(userAddress, JWT_SECRET);
+            // res.cookie("jwt", token, { maxAge: 900000, httpOnly: true, }).status(200).json("Authentication Successful & Cookie set");
+            res.status(200).json({ message: "Authentication Successful & jwt received", "jwt": token });
         }
     } catch (error) {
         console.log(error);

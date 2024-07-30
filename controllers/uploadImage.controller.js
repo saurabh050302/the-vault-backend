@@ -9,7 +9,7 @@ const pinata = new pinataSDK(PINATA_API_KEY, PINATA_API_SECRET)
 
 const uploadImageController = async (req, res) => {
     try {
-        const userAddress = "0x796a0df3b1139e63d7cdcb798c5560e13aece0ed";
+        const userAddress = req.decodedAddress;
 
         const user = await UserModel.findOne({ userAddress });
         if (!user) throw new Error("Invalid User");
@@ -23,13 +23,12 @@ const uploadImageController = async (req, res) => {
         if (!file) throw new Error("Invalid File")
 
         const { iv, encryptedData } = encryptFile(file.buffer, user.key);
-        const pinataRes = await pinata.pinJSONToIPFS({ iv, encryptedData });
-        console.log(pinataRes);
+        const pinataResponse = await pinata.pinJSONToIPFS({ iv, encryptedData });
 
-        res.status(200).json("Upload Image Successful");
+        res.status(200).json({ ipfsHash: pinataResponse.IpfsHash, message: "Upload Images Successful" });
     } catch (error) {
-        console.log(error);
-        res.status(500).json("Upload Image Failed");
+        // console.log(error);
+        res.status(500).json(error.message);
     }
 }
 
