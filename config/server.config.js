@@ -6,4 +6,5 @@ module.exports = {
     JWT_SECRET: process.env.JWT_SECRET,
     PINATA_API_KEY: process.env.PINATA_API_KEY,
     PINATA_API_SECRET: process.env.PINATA_API_SECRET,
+    PINATA_GATEWAY_URL: process.env.PINATA_GATEWAY_URL
 }

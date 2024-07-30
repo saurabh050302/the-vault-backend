@@ -8,9 +8,11 @@ app.use(express.urlencoded({ extended: true }));
 
 const authRoutes = require("./routes/auth.route")
 const uploadImageRoute = require("./routes/uploadImage.route")
+const getImageRoute = require("./routes/getImage.route")
 
 app.use("/api", authRoutes);
 app.use("/api", uploadImageRoute);
+app.use("/api", getImageRoute);
 
 const connectDB = require("./db/connectDB")
 const { MONGODB_URI, PORT } = require("./config/server.config")
